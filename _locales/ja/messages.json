@@ -1,5 +1,6 @@
 {
   "extensionDescription": {
     "message": "新しいタブページにブックマークをいい感じに表示して、素早くアクセスできるようにする。"
-  }
+  },
+  "languages": "言語"
 }

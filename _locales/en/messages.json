@@ -1,5 +1,6 @@
 {
   "extensionDescription": {
     "message": "An extension that displays bookmarks on a new tab page in a nice way for quick access."
-  }
+  },
+  "languages": "Languages"
 }
