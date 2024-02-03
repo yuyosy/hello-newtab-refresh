@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Masonry } from '@/components/masonry';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { ModeToggle } from '@/components/mode-toggle';
 
 export const Bookmarks = () => {
   const [list, setList] = useState([
@@ -24,9 +26,11 @@ export const Bookmarks = () => {
   );
 
   return (
-    <>
+    <main className="h-full w-full p-2 flex-1 overflow-y-auto bg-secondary">
       {/* Mock */}
-      <div className="flex flex-col gap-2 z-20 right-5 fixed">
+      <div className="p-6 mx-2 my-4 flex flex-col gap-2 z-20 right-5 fixed bg-purple-300/30 backdrop-blur-[1px]">
+        <span>Debug Options</span>
+        <ModeToggle />
         <Button
           onClick={() =>
             setList([Math.floor(Math.random() * (Math.floor(40) - 1) + 1), ...list])
@@ -55,24 +59,30 @@ export const Bookmarks = () => {
             setList([...list]);
           }}
         >
-          Pop-+
+          Pop-
         </Button>
       </div>
       <Masonry options={options}>
         {list.map((item, index) => {
           return (
-            <div
-              className="item bg-white p-4 transition-all ease-in-out duration-300 "
+            <Card
               key={index}
+              className="p-2 bg-background/60 transition-all ease-in-out duration-300"
             >
-              {/* Mock */}
-              {Array.from(Array(item), (_, i) => (
-                <div key={`${index}-${item}-${i}`}>{`${item}-${i}`}</div>
-              ))}
-            </div>
+              <div>Folder Name-{index}</div>
+              <div>
+                {/* Mock */}
+                {Array.from(Array(item), (_, i) => (
+                  <div key={`${index}-${item}-${i}`}>{`${item}-${i}`}</div>
+                ))}
+              </div>
+              <div>
+                {Array(item).length} bookmark{Array(item).length === 1 ? '' : 's'}
+              </div>
+            </Card>
           );
         })}
       </Masonry>
-    </>
+    </main>
   );
 };

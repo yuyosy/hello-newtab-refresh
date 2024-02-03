@@ -12,5 +12,9 @@ export const Masonry = ({ children, options }: MasonryProps) => {
   const childCount = React.Children.count(children);
   useMacy({ containerRef, options, childCount });
 
-  return <div ref={containerRef}>{children}</div>;
+  return (
+    <div ref={containerRef} className="transition-all ease-in-out duration-300">
+      {children}
+    </div>
+  );
 };
