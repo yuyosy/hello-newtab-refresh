@@ -1,21 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Theme } from '@radix-ui/themes';
 
 import { ThemeProvider } from '@/components/providers/theme-provider';
-
-import Page from './page';
+import { SearchCommand } from '@/components/search-command';
+import { ThemeWrapper } from '@/components/theme-wrapper';
 
 import '@/css/global.css';
-import { SearchCommand } from '@/components/search-command';
+import '@/css/themes.css';
 
+import Page from './page';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Theme asChild>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+      <ThemeWrapper className="h-full">
         <SearchCommand />
         <Page />
-      </ThemeProvider>
-    </Theme>
+      </ThemeWrapper>
+    </ThemeProvider>
   </React.StrictMode>,
 );
