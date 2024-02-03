@@ -16,4 +16,8 @@
     ],
     "editor.wordWrap": "bounded",
     "editor.wordWrapColumn": 89, // == prettier:printWidth
+    "jest.autoRun": {
+        "watch": false,
+        "onSave": "test-file"
+    },
 }
