@@ -1,4 +1,5 @@
-import { atom, useAtom } from 'jotai';
+import { useEffect } from 'react';
+
 import {
   CommandDialog,
   CommandEmpty,
@@ -7,18 +8,16 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { useEffect } from 'react';
-
-const isOpenAtom = atom(false);
+import { useSearchModal } from '@/hooks/use-search-modal';
 
 export const SearchCommand = () => {
-  const [open, setOpen] = useAtom(isOpenAtom);
+  const { isOpen, close, toggle } = useSearchModal();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'b' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen(open => !open);
+        toggle();
       }
     };
     document.addEventListener('keydown', down);
@@ -26,7 +25,7 @@ export const SearchCommand = () => {
   }, []);
 
   return (
-    <CommandDialog open={open}>
+    <CommandDialog open={isOpen} onOpenChange={close}>
       <CommandInput></CommandInput>
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
