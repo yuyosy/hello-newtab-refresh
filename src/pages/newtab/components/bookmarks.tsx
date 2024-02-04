@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
+
 import { Masonry } from '@/components/masonry';
+import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ModeToggle } from '@/components/mode-toggle';
 
 export const Bookmarks = () => {
   const [list, setList] = useState([

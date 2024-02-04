@@ -10,8 +10,8 @@
 // apps/www/components/theme-wrapper.tsx
 //
 
-import { cn } from '@/lib/utils';
 import { useThemeConfig, useThemeColor } from '@/hooks/use-theme';
+import { cn } from '@/lib/utils';
 
 interface ThemeWrapperProps extends React.ComponentProps<'div'> {
   defaultTheme?: string;

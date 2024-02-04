@@ -1,4 +1,4 @@
-import { ManifestV3 } from '@/@types/manifest';
+import { ManifestV3 } from '@/types/manifest';
 
 export const manifest: ManifestV3 = {
   manifest_version: 3,
@@ -21,5 +21,8 @@ export const manifest: ManifestV3 = {
   background: {
     service_worker: 'src/background/background.ts',
     type: 'module',
+  },
+  icons: {
+    48: 'src/images/icon_048.png',
   },
 };

@@ -1,6 +1,8 @@
-import { useMacy } from '@/hooks/use-macy';
-import { MacyOptions } from 'macy';
 import React, { ElementRef, useRef } from 'react';
+
+import { MacyOptions } from 'macy';
+
+import { useMacy } from '@/hooks/use-macy';
 
 interface MasonryProps {
   children: React.ReactNode;

@@ -1,11 +1,11 @@
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
-import { browserStorageLocal } from '@/storage/local-storage';
-import { ThemeConfig, defaultStorageItems } from '@/storage/default-storage';
+import { ThemeMode } from '@/registry/mode';
 import { Style } from '@/registry/styles';
 import { Theme } from '@/registry/themes';
-import { ThemeMode } from '@/registry/mode';
+import { ThemeConfig, defaultStorageItems } from '@/storage/default-storage';
+import { browserStorageLocal } from '@/storage/local-storage';
 
 const themeStyleAtom = atomWithStorage<Style['name']>(
   'optionsThemeStyle',

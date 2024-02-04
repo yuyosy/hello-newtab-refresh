@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+
 import { MacyOptions, default as Macy } from 'macy';
 
 interface useMacyProps {
