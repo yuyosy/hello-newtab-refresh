@@ -1,6 +1,8 @@
+import { AsyncStorage } from 'jotai/vanilla/utils/atomWithStorage';
+
 import { Mutex } from '@/utilities/mutex';
+
 import { StorageContent, StorageKey, StoragePartialItems } from './default-storage';
-import { SyncStorage } from 'jotai/vanilla/utils/atomWithStorage';
 
 const mutex = new Mutex();
 
@@ -24,10 +26,10 @@ export const loadAndSetStorage = async (newStorage: StorageContent) => {
   return await saveStorage(mergedStorage);
 };
 
-// Implemented according to Interface SyncStorage of Jotai.
-export const browserStorageLocal: SyncStorage<any> = {
+// Implemented according to Interface AsyncStorage of Jotai.
+export const browserStorageLocal: AsyncStorage<any> = {
   getItem: (key: string, initialValue: any): PromiseLike<StorageContent> => {
-    return new Promise((resolve, _reject) => {
+    return new Promise(resolve => {
       loadStorage({ [key]: initialValue }).then(result => {
         if (Object.keys(result).length === 0) {
           resolve(initialValue);
@@ -55,7 +57,7 @@ export const browserStorageLocal: SyncStorage<any> = {
     const listener = function (changes: {
       [key: string]: chrome.storage.StorageChange;
     }) {
-      if (changes.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(changes, key)) {
         callback(changes[key].newValue);
       } else {
         callback(initialValue);

@@ -48,7 +48,7 @@ export const Navigation = () => {
     <aside
       ref={sidebarRef}
       className={cn(
-        'group/sidebar h-full w-12 z-20 flex flex-col relative overflow-y-auto border-r-[1px] border-neutral-300 dark:border-neutral-700',
+        'group/sidebar h-full w-12 z-20 flex flex-col relative overflow-y-auto border-r-[1px] dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700',
         isResetting && 'transition-all ease-in-out duration-300',
       )}
     >
@@ -58,7 +58,12 @@ export const Navigation = () => {
           icon={isCollapsed ? ChevronsRight : ChevronsLeft}
           onClick={isCollapsed ? expand : collapse}
         />
-        <NavigationItem label="Search" icon={Search} onClick={searchOpen} />
+        <NavigationItem
+          label="Search"
+          icon={Search}
+          onClick={searchOpen}
+          kbd={['Ctrl', 'B']}
+        />
         <NavigationItem label="Bookmark" icon={Bookmark} />
         <NavigationItem label="History" icon={History} />
         <NavigationItem label="Download" icon={Download} />
