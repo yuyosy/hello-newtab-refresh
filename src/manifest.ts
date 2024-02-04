@@ -7,7 +7,7 @@ export const manifest: ManifestV3 = {
   description: '__MSG_extensionDescription__',
   default_locale: 'en',
   incognito: 'split',
-  permissions: ['bookmarks', 'storage'],
+  permissions: ['bookmarks', 'storage', 'favicon'],
   chrome_url_overrides: {
     newtab: 'src/pages/newtab/index.html',
   },
