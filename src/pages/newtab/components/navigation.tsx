@@ -1,4 +1,5 @@
-import { cn } from '@/lib/utils';
+import { ElementRef, useRef, useState } from 'react';
+
 import {
   Blocks,
   Bookmark,
@@ -10,12 +11,18 @@ import {
   Search,
   Settings,
 } from 'lucide-react';
-import { ElementRef, useRef, useState } from 'react';
+
+import { useAppearanceModal } from '@/hooks/use-appearance-modal';
+import { useSearchModal } from '@/hooks/use-search-modal';
+import { cn } from '@/lib/utils';
+
 import { NavigationItem } from './navigation-item';
 
 export const Navigation = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
+  const { open: searchOpen } = useSearchModal();
+  const { open: appearanceOpen } = useAppearanceModal();
 
   const sidebarRef = useRef<ElementRef<'aside'>>(null);
 
@@ -51,12 +58,12 @@ export const Navigation = () => {
           icon={isCollapsed ? ChevronsRight : ChevronsLeft}
           onClick={isCollapsed ? expand : collapse}
         />
-        <NavigationItem label="Search" icon={Search} />
+        <NavigationItem label="Search" icon={Search} onClick={searchOpen} />
         <NavigationItem label="Bookmark" icon={Bookmark} />
         <NavigationItem label="History" icon={History} />
         <NavigationItem label="Download" icon={Download} />
         <NavigationItem label="Extensions" icon={Blocks} />
-        <NavigationItem label="Appearance" icon={Palette} />
+        <NavigationItem label="Appearance" icon={Palette} onClick={appearanceOpen} />
         <NavigationItem label="Settings" icon={Settings} />
       </div>
     </aside>
