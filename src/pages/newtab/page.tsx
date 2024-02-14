@@ -3,7 +3,7 @@ import { Navigation } from './components/navigation';
 
 const Page = () => {
   return (
-    <div className="h-full flex">
+    <div className="h-full w-ful flex">
       <Navigation />
       <Bookmarks />
     </div>
