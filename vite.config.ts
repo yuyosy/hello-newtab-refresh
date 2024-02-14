@@ -24,8 +24,8 @@ export default defineConfig({
     },
     rollupOptions: {
       input: {
-        newtab: resolve(__dirname, 'src/newtab/index.html'),
-        options: resolve(__dirname, 'src/options/index.html'),
+        newtab: resolve(__dirname, 'src/pages/newtab/index.html'),
+        options: resolve(__dirname, 'src/pages/options/index.html'),
       },
     },
   },
