@@ -1,18 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
+import { CommandLoading } from 'cmdk';
 import { X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
 import { useSearchModal } from '@/hooks/use-search-modal';
 import { cn } from '@/lib/utils';
+import { searchBookmarks } from '@/utilities/bookmarks/get-bookmarks';
+import { BookmarkTreeNodes } from '@/utilities/bookmarks/types';
 
 const getState = (open: boolean) => {
   return open ? 'open' : 'closed';
@@ -20,17 +22,46 @@ const getState = (open: boolean) => {
 
 export const SearchCommand = () => {
   const { isOpen, close, toggle } = useSearchModal();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [loading, setLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [searchResults, setSearchResults] = useState<BookmarkTreeNodes>([]);
+
+  const search = async () => {
+    setLoading(true);
+    const results = await searchBookmarks(inputValue);
+    console.log(results);
+    setSearchResults(results);
+    setLoading(false);
+  };
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'b' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         toggle();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
       }
     };
     document.addEventListener('keydown', down);
     return () => document.removeEventListener('keydown', down);
   }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      inputRef.current?.focus();
+    } else {
+      setInputValue('');
+      inputRef.current?.blur();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    search();
+  }, [inputValue]);
 
   // CommandDialog is not used due to the occurrence of the issue described in the following issue.
   //
@@ -52,26 +83,18 @@ export const SearchCommand = () => {
         </div>
         <div onClick={e => e.stopPropagation()}>
           <Command className="p-2 shadow-lg border">
-            <CommandInput></CommandInput>
+            <CommandInput
+              ref={inputRef}
+              value={inputValue}
+              onValueChange={setInputValue}
+              placeholder="Search Bookmarks"
+            />
             <CommandList className="max-h-[300px]">
               <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup heading="Bookmarks">
-                <CommandItem>001</CommandItem>
-                <CommandItem>002</CommandItem>
-                <CommandItem>003</CommandItem>
-                <CommandItem>004</CommandItem>
-                <CommandItem>005</CommandItem>
-                <CommandItem>006</CommandItem>
-                <CommandItem>007</CommandItem>
-                <CommandItem>008</CommandItem>
-                <CommandItem>009</CommandItem>
-                <CommandItem>010</CommandItem>
-                <CommandItem>011</CommandItem>
-                <CommandItem>012</CommandItem>
-                <CommandItem>013</CommandItem>
-                <CommandItem>014</CommandItem>
-                <CommandItem>015</CommandItem>
-              </CommandGroup>
+              {loading && <CommandLoading>Searching boorkmarks...</CommandLoading>}
+              {searchResults.map(item => (
+                <CommandItem key={item.id}>{item.title}</CommandItem>
+              ))}
             </CommandList>
           </Command>
         </div>
