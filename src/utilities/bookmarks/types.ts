@@ -13,6 +13,7 @@ export interface Bookmark {
   id: string;
   parentId?: string | undefined;
   faviconUrl: string;
+  color: number;
 }
 
 export interface Folder {

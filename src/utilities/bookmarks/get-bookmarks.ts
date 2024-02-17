@@ -1,3 +1,5 @@
+import { colorHashString } from '@/utilities/color-hash';
+
 import {
   Bookmark,
   BookmarkTreeNode,
@@ -11,8 +13,14 @@ export const getTree = async (): Promise<BookmarkTreeNodes> => {
   return nodes;
 };
 
-export const searchBookmarks = async (words: string): Promise<BookmarkTreeNodes> => {
-  const results = await chrome.bookmarks.search(words);
+export const searchBookmarks = async (words: string): Promise<Bookmark[]> => {
+  const results: Bookmark[] = [];
+  const nodes = await chrome.bookmarks.search(words);
+  nodes.forEach(node => {
+    if (node.url) {
+      results.push(createBookmark(node));
+    }
+  });
   return results;
 };
 
@@ -31,6 +39,7 @@ const createBookmark = (node: BookmarkTreeNode): Bookmark => {
     url: node.url ? node.url : '',
     faviconUrl: getFaviconUrl(node.url),
     parentId: node.parentId ? node.parentId : '',
+    color: colorHashString(node.title),
   };
   return bookmark;
 };
@@ -50,29 +59,31 @@ const createFolder = (node: BookmarkTreeNode, parentPath: NodeInfo[]) => {
 const walk = (
   nodes: BookmarkTreeNodes,
   path: NodeInfo[],
-  flattenedFolders: Folder[],
+  flattenedFolders: Map<string, Folder>,
 ) => {
   nodes.forEach(node => {
     if (node.children && node.children.length === 0) {
       return;
     }
     if (node.children) {
-      flattenedFolders.push(createFolder(node, path));
+      flattenedFolders.set(node.id, createFolder(node, path));
       walk(
         node.children,
         [...path, { id: node.id, title: node.title }],
         flattenedFolders,
       );
     } else {
-      const parentNode = flattenedFolders.find(obj => obj.id === node.parentId);
-      parentNode?.bookmarks.push(createBookmark(node));
+      if (node.parentId) {
+        const parentNode = flattenedFolders.get(node.parentId);
+        parentNode?.bookmarks.push(createBookmark(node));
+      }
     }
   });
 };
 
-export const getBookmarkItems = async () => {
+export const getBookmarkItems = async (): Promise<Map<string, Folder>> => {
   console.log('getBookmarkItems');
-  const flattened: Folder[] = [];
+  const flattened: Map<string, Folder> = new Map();
   const nodes = await getTree();
 
   nodes.forEach(topLevelGroup => {
