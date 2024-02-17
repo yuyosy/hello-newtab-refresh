@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar';
 import { CommandLoading } from 'cmdk';
 import { X } from 'lucide-react';
 
@@ -14,7 +15,7 @@ import {
 import { useSearchModal } from '@/hooks/use-search-modal';
 import { cn } from '@/lib/utils';
 import { searchBookmarks } from '@/utilities/bookmarks/get-bookmarks';
-import { BookmarkTreeNodes } from '@/utilities/bookmarks/types';
+import { Bookmark } from '@/utilities/bookmarks/types';
 
 const getState = (open: boolean) => {
   return open ? 'open' : 'closed';
@@ -26,7 +27,7 @@ export const SearchCommand = () => {
 
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [searchResults, setSearchResults] = useState<BookmarkTreeNodes>([]);
+  const [searchResults, setSearchResults] = useState<Bookmark[]>([]);
 
   const search = async () => {
     setLoading(true);
@@ -60,9 +61,26 @@ export const SearchCommand = () => {
   }, [isOpen]);
 
   useEffect(() => {
-    search();
+    const delay = 500;
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    const searchWithDelay = () => {
+      timeoutId = setTimeout(() => {
+        search();
+      }, delay);
+    };
+
+    clearTimeout(timeoutId!);
+    searchWithDelay();
+
+    return () => {
+      clearTimeout(timeoutId!);
+    };
   }, [inputValue]);
 
+  const handleChange = (value: string) => {
+    setInputValue(value);
+  };
   // CommandDialog is not used due to the occurrence of the issue described in the following issue.
   //
   // refer to: https://github.com/radix-ui/primitives/issues/2356
@@ -86,14 +104,50 @@ export const SearchCommand = () => {
             <CommandInput
               ref={inputRef}
               value={inputValue}
-              onValueChange={setInputValue}
+              onValueChange={handleChange}
               placeholder="Search Bookmarks"
             />
             <CommandList className="max-h-[300px]">
-              <CommandEmpty>No results found.</CommandEmpty>
-              {loading && <CommandLoading>Searching boorkmarks...</CommandLoading>}
-              {searchResults.map(item => (
-                <CommandItem key={item.id}>{item.title}</CommandItem>
+              <CommandEmpty>
+                {inputValue === ''
+                  ? 'Enter a keyword to start searching bookmarks'
+                  : 'No results found.'}
+              </CommandEmpty>
+              {loading && (
+                <CommandLoading className="flex items-center justify-center p-3">
+                  Searching boorkmarks...
+                </CommandLoading>
+              )}
+
+              {searchResults.map((bookmark: Bookmark) => (
+                <CommandItem
+                  key={bookmark.id}
+                  value={`${bookmark.id}|${bookmark.title}|${bookmark.url}`}
+                  className="m-1 rounded-sm flex flex-row gap-2"
+                >
+                  <div className="p-1.5 flex items-center gap-1">
+                    <Avatar className="flex items-center justify-center h-8 w-8 shrink-0">
+                      <AvatarImage src={bookmark.faviconUrl} />
+                      <AvatarFallback
+                        className="overflow-hidden text-nowrap text-ellipsis"
+                        style={{
+                          color: `hsl(${bookmark.color},80%,60%,100%)`,
+                        }}
+                      >
+                        <span className="font-bold text-sm uppercase">
+                          {bookmark.title.charAt(0)}
+                        </span>
+                        <span className="font-bold">{bookmark.title.charAt(1)}</span>
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div className="box-border overflow-hidden">
+                    <div className="">{bookmark.title}</div>
+                    <div className="overflow-hidden text-nowrap text-ellipsis text-xs text-muted-foreground">
+                      {bookmark.url}
+                    </div>
+                  </div>
+                </CommandItem>
               ))}
             </CommandList>
           </Command>
