@@ -56,7 +56,7 @@ export const Bookmarks = () => {
   );
 
   return (
-    <main className="box-border h-full w-[calc(100%-3rem)] p-2 mx-12 flex-1 fixed overflow-y-auto bg-secondary">
+    <main className="box-border h-full w-[calc(100%-3rem)] p-2 mx-12 flex-1 fixed overflow-y-auto">
       <div className="p-6 mx-2 my-4 flex flex-col gap-2 z-20 right-5 fixed bg-purple-300/30 backdrop-blur-[1px]">
         <span>Debug Options</span>
         <ModeToggle />

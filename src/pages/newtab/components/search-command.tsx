@@ -32,7 +32,7 @@ export const SearchCommand = () => {
   const search = async () => {
     setLoading(true);
     const results = await searchBookmarks(inputValue);
-    console.log(results);
+    // console.log(results);
     setSearchResults(results);
     setLoading(false);
   };
@@ -93,7 +93,7 @@ export const SearchCommand = () => {
         'fixed h-full w-full hidden data-[state=open]:flex items-center justify-center z-[-100] data-[state=open]:z-[100] bg-background/20 backdrop-blur-[1.6px]',
       )}
     >
-      <div className="flex flex-col w-1/2 max-w-lg gap-1">
+      <div className="flex flex-col w-1/2 max-w-xl gap-1">
         <div className="flex justify-end">
           <Button onClick={close} variant="outline" size="icon" className="h-8 w-8">
             <X className="h-4 w-4" />
@@ -107,11 +107,13 @@ export const SearchCommand = () => {
               onValueChange={handleChange}
               placeholder="Search Bookmarks"
             />
-            <CommandList className="max-h-[300px]">
+            <CommandList className="h-[300px]">
               <CommandEmpty>
-                {inputValue === ''
-                  ? 'Enter a keyword to start searching bookmarks'
-                  : 'No results found.'}
+                <span className="text-muted-foreground">
+                  {inputValue === ''
+                    ? 'Enter a keyword to start searching bookmarks.'
+                    : 'No results found.'}
+                </span>
               </CommandEmpty>
               {loading && (
                 <CommandLoading className="flex items-center justify-center p-3">
@@ -150,6 +152,13 @@ export const SearchCommand = () => {
                 </CommandItem>
               ))}
             </CommandList>
+            <div className="h-6 p-1 flex flex-col border-t">
+              <div className="text-muted-foreground">
+                {inputValue === ''
+                  ? ''
+                  : `${searchResults.length} bookmark${searchResults.length === 1 ? '' : 's'}`}
+              </div>
+            </div>
           </Command>
         </div>
       </div>

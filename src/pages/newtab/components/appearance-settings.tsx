@@ -11,6 +11,11 @@ import { useAppearanceModal } from '@/hooks/use-appearance-modal';
 
 export function AppearanceSettings() {
   const { isOpen, close } = useAppearanceModal();
+
+  // TODO: Change implementation
+  //
+  // refer to: https://github.com/radix-ui/primitives/issues/2356
+  //
   return (
     <Dialog open={isOpen} onOpenChange={close}>
       <DialogContent className="sm:max-w-[425px]">

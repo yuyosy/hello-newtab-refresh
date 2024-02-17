@@ -16,7 +16,11 @@ export const BookmarksFolder = ({ folder }: BookmarksFolderProps) => {
       <div className="text-base">{folder.title}</div>
       <div className="flex flex-col gap-[.3rem]">
         {folder.bookmarks.map(bookmark => (
-          <a key={bookmark.id} href={bookmark.url} className="hover:bg-accent">
+          <a
+            key={bookmark.id}
+            href={bookmark.url}
+            className="rounded-md hover:bg-primary/10"
+          >
             <div className="p-1.5 flex items-center gap-1">
               <Avatar className="flex items-center justify-center h-5 w-5 shrink-0">
                 <AvatarImage src={bookmark.faviconUrl} />
@@ -39,7 +43,7 @@ export const BookmarksFolder = ({ folder }: BookmarksFolderProps) => {
           </a>
         ))}
       </div>
-      <div className="text-muted-foreground">
+      <div className="px-1.5 text-muted-foreground">
         {folder.bookmarks.length} bookemark
         {folder.bookmarks.length === 1 ? '' : 's'}
       </div>
