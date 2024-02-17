@@ -9,22 +9,36 @@ import { getBookmarkItems } from '@/utilities/bookmarks/get-bookmarks';
 import { Folder } from '@/utilities/bookmarks/types';
 
 export const Bookmarks = () => {
-  // const generate = useCallback(async () => {
-  //     const bookmarks = await getBookmarkItems();
-  //     return bookmarks;
-  //   }, )
-  const [bookmarks, setBookmarks] = useState<Folder[]>([]);
-  const getBookmarks = useCallback(getBookmarkItems, []);
-
-  const memoizedGetBookmarks = useMemo(() => {
-    return getBookmarks();
-  }, [getBookmarks]);
+  const [bookmarks, setBookmarks] = useState<Map<string, Folder>>(new Map());
+  const getBookmark = useCallback(async (): Promise<Map<string, Folder>> => {
+    return await getBookmarkItems();
+  }, []);
 
   useEffect(() => {
-    memoizedGetBookmarks.then(result => {
+    const updateBookmarks = async () => {
+      const result = await getBookmark();
       setBookmarks(result);
-    });
-  }, [memoizedGetBookmarks]);
+    };
+
+    const handleBookmarkUpdate = () => {
+      updateBookmarks();
+    };
+
+    updateBookmarks();
+    chrome.bookmarks.onCreated.addListener(handleBookmarkUpdate);
+    chrome.bookmarks.onChanged.addListener(handleBookmarkUpdate);
+    chrome.bookmarks.onMoved.addListener(handleBookmarkUpdate);
+    chrome.bookmarks.onRemoved.addListener(handleBookmarkUpdate);
+    chrome.bookmarks.onChildrenReordered.addListener(handleBookmarkUpdate);
+
+    return () => {
+      chrome.bookmarks.onCreated.removeListener(handleBookmarkUpdate);
+      chrome.bookmarks.onChanged.removeListener(handleBookmarkUpdate);
+      chrome.bookmarks.onMoved.removeListener(handleBookmarkUpdate);
+      chrome.bookmarks.onRemoved.removeListener(handleBookmarkUpdate);
+      chrome.bookmarks.onChildrenReordered.removeListener(handleBookmarkUpdate);
+    };
+  }, [getBookmark]);
 
   const options = useMemo(
     () => ({
@@ -49,7 +63,7 @@ export const Bookmarks = () => {
         <ModeToggle />
       </div>
       <Masonry options={options}>
-        {bookmarks.map(folder => {
+        {Array.from(bookmarks.values()).map(folder => {
           return (
             <Card
               key={folder.id}
@@ -61,11 +75,21 @@ export const Bookmarks = () => {
                   <a key={bookmark.id} href={bookmark.url} className="hover:bg-accent">
                     <div className="p-1.5 flex items-center gap-1">
                       {/* <img src={bookmark.faviconUrl} className="h-5 w-5 shrink-0" /> */}
-                      <Avatar className="flex justify-center border h-5 w-5 shrink-0">
+                      <Avatar className="flex items-center justify-center h-5 w-5 shrink-0">
                         <AvatarImage src={bookmark.faviconUrl} />
-                        <AvatarFallback>{bookmark.title.charAt(0)}</AvatarFallback>
+                        <AvatarFallback
+                          className="overflow-hidden text-nowrap text-ellipsis"
+                          style={{
+                            color: `hsl(${bookmark.color},80%,60%,100%)`,
+                          }}
+                        >
+                          <span className="font-bold text-sm uppercase">
+                            {bookmark.title.charAt(0)}
+                          </span>
+                          <span className="font-bold">{bookmark.title.charAt(1)}</span>
+                        </AvatarFallback>
                       </Avatar>
-                      <span className=" overflow-hidden text-nowrap text-ellipsis">
+                      <span className="overflow-hidden text-nowrap text-ellipsis">
                         {bookmark.title}
                       </span>
                     </div>
