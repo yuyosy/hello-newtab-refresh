@@ -5,6 +5,10 @@ import { defineConfig } from 'vite';
 
 import { manifest } from './src/manifest';
 
+if (process.env.NODE_ENV === 'development') {
+  manifest.name = `${manifest.name} [${process.env.NODE_ENV}]`;
+}
+
 process.env.VITE_APP_VERSION = JSON.stringify(process.env.npm_package_version).replace(
   /"/g,
   '',
